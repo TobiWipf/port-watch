@@ -56,7 +56,7 @@ struct Project: Identifiable {
 
         let byCwd = Dictionary(grouping: portsByPid.keys) { cwds[$0] ?? "/" }
         return byCwd.compactMap { cwd, pids in
-            guard cwd.hasPrefix(home + "/"), !cwd.hasPrefix(home + "/Library/") else { return nil }
+            guard cwd != "/", !["/System/", "/Applications/", "/Library/", home + "/Library/"].contains(where: cwd.hasPrefix) else { return nil }
             // Ports in the ephemeral range are treated as helpers (wrangler inspector, workerd), so a server bound to a random high port is hidden.
             let ports = pids.flatMap { portsByPid[$0] ?? [] }.filter { $0 < 49152 }.sorted()
             guard !ports.isEmpty else { return nil }
